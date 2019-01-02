@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect} from 'react-router-dom';
+import { Jumbotron, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import '../../style.css';
 import temp from '../images/temp.png';
 
@@ -56,25 +57,27 @@ export class Login extends Component {
         return (
             <div>
                 {this.renderRedirect()}
-                <div class="jumbotron" style={entry}>
+                <Jumbotron style={entry}>
                     <div style={title}>
                         <img src={temp} style={logo} alt='' />
                         <h>Water Leakage Monitoring</h>
                     </div>
                     <h1 class="display-3" style={textStyle}>Login</h1>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+                    <Form>
+                    <FormGroup>
+                        <Label for="exampleInputEmail1">Email address</Label>
+                        <Input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
-                    </div>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="exampleInputPassword1">Password</Label>
+                        <Input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+                    </FormGroup>
                     <div>
-                        <button type="submit" class="btn btn-success" style={buttonStyle} onClick={this.setRedirect}>Sign In</button>
+                        <Button color="success" style={buttonStyle} onClick={this.setRedirect}>Sign In</Button>
                     </div>
-                </div>
+                    </Form>
+                </Jumbotron>
             </div>
         );
     }

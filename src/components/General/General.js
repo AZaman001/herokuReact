@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Map, GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react'
+import { Redirect} from 'react-router-dom';
 import normal from '../fixed.png';
-import TopBar from '../TopBar/TopBar'
 import NavBar from '../NavBar/NavBar'
 import InfoBar from '../InfoBar/InfoBar'
 
@@ -22,12 +22,35 @@ const mainMap = {
 };
 
 export class MapContainer extends Component{
+  
+  constructor() {
+    super();
+    this.state = {
+        showingInfoWindow: false, //Hides or shows infoWindow
+        activeMarker: {}, // Shows active marker upon click
+        selectedPlace: {}, // shows infoWindow to selected place upon a marker
+        redirect: false
+    };
 
-  state = {
-    showingInfoWindow: false, //Hides or shows infoWindow
-    activeMarker: {}, // Shows active marker upon click
-    selectedPlace: {} // shows infoWindow to selected place upon a marker
-  };
+    this.reloadListener();
+  }
+
+  reloadListener() {
+    if (window.performance) {
+      if (performance.navigation.type === 1) {
+        alert( "An issue has been detected!");
+        window.location.replace('http://localhost:3000/detected');
+        // For hosted app URL should be: https://water-react-app.herokuapp.com/detected
+      } 
+    }
+  }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+        return <Redirect to='/detected' />
+    }
+  }
+
 
   //used to show InfoWindow
   onMarkerClick = (props, marker, e) =>
@@ -50,6 +73,7 @@ export class MapContainer extends Component{
   render() {
     return (
       <div>
+        {this.renderRedirect()}
       <div>
         <NavBar/>
       </div>

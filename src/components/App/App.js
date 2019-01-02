@@ -1,114 +1,109 @@
 import React, { Component } from 'react';
-import {GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react'
-import marked from '../marked.png'; 
-import normal from '../fixed.png';
+import { Redirect } from 'react-router-dom';
+import { Alert, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import '../../style.css';
-import CurrentLocation from '../components/../../Map';
-import NavBar from '../NavBar/NavBar'
-
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import NavBar from '../NavBar/NavBar';
+import MapContainer from '../IssueMap/IssueMap';
+import start from '../images/service.png';
+import whoops from '../images/x.png';
 
 const mainMap = {
-  marginBottom: '50px'
+  position: 'fixed',
+  top: '80px'
 };
 
 const alert = {
   margin: "40px"
 };
 
-export class MapContainer extends Component{
+const service = {
+  position: 'absolute',
+  left: '450px',
+  bottom: '50px',
+  marginTop: "65px",
+  paddingRight: '20px'
+};
+
+const falseAlarm = {
+  position: 'absolute',
+  left: '750px',
+  bottom: '50px',
+  marginTop: "65px",
+  paddingRight: '20px'
+};
+
+const option = {
+  width: "30px",
+  height: "30px",
+  marginRight: "5px"
+};
+
+export class App extends Component {
 
   state = {
-    showingInfoWindow: false, //Hides or shows infoWindow
-    activeMarker: {}, // Shows active marker upon click
-    selectedPlace: {} // shows infoWindow to selected place upon a marker
+    visible: true,
+    popOpen1: false,
+    popOpen2: false
   };
 
-  //used to show InfoWindow
-  onMarkerClick = (props, marker, e) =>
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true
-    });
-  
-  // to close out of InfoWindow
-  onClose = props => {
-    if (this.state.showingInfoWindow) {
-      this.setState({
-        showingInfoWindow: false,
-        activeMarker: null
-      });
+  componentDidMount() {
+    this.id = setTimeout(() => this.setState({ redirect: true }), 60000)
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.id)
+  }
+
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to='/resolved' />
     }
-  };
+  }
+
+  onDismiss = () => {
+    this.setState({
+      visible: false
+    });
+  }
+
+  toggle = () => {
+    this.setState({
+      popOpen1: !this.state.popOpen1
+    });
+  }
+
+  toggle2 = () => {
+    this.setState({
+      popOpen2: !this.state.popOpen2
+    })
+  }
 
   render() {
     return (
       <div>
-      <div>
-        <NavBar/>
-      </div>
-      <div style={alert}>
-        <div class="alert alert-dismissible alert-danger">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Oh No!</strong> An issue has been detected. Please check it out!
+        {this.renderRedirect()}
+        <div>
+          <NavBar />
         </div>
-      </div>
-      <div>
-        <div style= {mainMap}>
-        <CurrentLocation
-          centerAroundCurrentLocation
-          google = {this.props.google}
-        >
-        
-          <Marker 
-            onClick = {this.onMarkerClick}
-            name = {'ISSUE DETECTED'}
-            options={{icon:`${marked}`}}
-            number = '#21'
-            case = 'Water Leakage '
-            message = 'A water leakage has been detected here, please initiate service assignment.'
-          />
-
-          <Marker
-            onClick = {this.onMarkerClick}
-            position = {{ lat: 30.230761, lng: -97.711777}}
-            name = {'Oracle - Austin Campus'}
-            options={{icon:`${normal}`}}
-            number = '#38'
-            case = 'WATER PUMP '
-            message = 'Major Water System located in this area.'
-          />
-        
-        <InfoWindow
-         marker={this.state.activeMarker}
-         visible={this.state.showingInfoWindow}
-         onClose={this.onClose}
-        >
-        <Paper>
-          <Typography
-              variant = 'headline'
-              component = 'h4'
-          >
-              {this.state.selectedPlace.name}
-          </Typography>
-          <Typography
-            component = 'p'
-          >
-               <b><u>{this.state.selectedPlace.case}@ Pump {this.state.selectedPlace.number} </u></b> <br />
-               {this.state.selectedPlace.message}
-            </Typography>
-        </Paper>
-        </InfoWindow>
-      </CurrentLocation>
-      </div>
-      </div>
+        <div style={alert}>
+          <Alert color='danger' isOpen={this.state.visible} toggle={this.onDismiss}>
+            <strong>Oh No!</strong> An issue has been detected. Please check it out!
+        </Alert>
+        </div>
+        <MapContainer style={mainMap}/>
+        <Button color="warning" style={service} id="pop1" onClick={this.toggle}> <img src={start} style={option} alt='' /> <u>Initiative Service</u></Button>
+        <Popover placement="top" isOpen={this.state.popOpen1} target="pop1" toggle={this.toggle}>
+          <PopoverHeader>Service</PopoverHeader>
+          <PopoverBody>A service request has been placed for the water pump here.</PopoverBody>
+        </Popover>
+        <Button color="danger" style={falseAlarm} id="pop2" onClick={this.toggle2}> <img src={whoops} style={option} alt='' /> <u>False Alarm</u></Button>
+        <Popover placement="top" isOpen={this.state.popOpen2} target="pop2" toggle={this.toggle2}>
+          <PopoverHeader>Discarded</PopoverHeader>
+          <PopoverBody>This report will no longer be tracked.</PopoverBody>
+        </Popover>
       </div>
     );
   }
 }
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyBQSaYrjsnUajXRIHdvyZR-h8wYF-amtZk'
-})(MapContainer);
+export default App;

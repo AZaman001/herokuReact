@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, InfoWindow, Marker} from 'google-maps-react'
+import { Alert, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import fixed from '../resolved.png';
 import normal from '../fixed.png';
 import '../../style.css';
@@ -22,8 +23,16 @@ export class MapContainer extends Component{
   state = {
     showingInfoWindow: false, //Hides or shows infoWindow
     activeMarker: {}, // Shows active marker upon click
-    selectedPlace: {} // shows infoWindow to selected place upon a marker
+    selectedPlace: {}, // shows infoWindow to selected place upon a marker
+    visible: true
   };
+
+  // Dismiss alert
+  onDismiss = () => {
+    this.setState({
+      visible: false
+    });
+  }
 
   //used to show InfoWindow
   onMarkerClick = (props, marker, e) =>
@@ -47,15 +56,13 @@ export class MapContainer extends Component{
     return (
       <div>
       <div>
-        <NavBar/>
-      </div>
-      <div style={alert}>
-        <div class="alert alert-dismissible alert-info">
-          <button type="button" class="close" data-dismiss="alert">&times;</button>
-          <strong>Done!</strong> An issue has been resolved.
+          <NavBar />
         </div>
-      </div>
-      <div>
+        <div style={alert}>
+          <Alert color='info' isOpen={this.state.visible} toggle={this.onDismiss}>
+            <strong>Done</strong> An issue has been resolved.
+        </Alert>
+        </div>
         <div style={mainMap}>
         <CurrentLocation
           centerAroundCurrentLocation
@@ -102,7 +109,6 @@ export class MapContainer extends Component{
         </Paper>
         </InfoWindow>
       </CurrentLocation>
-      </div>
       </div>
       </div>
     );

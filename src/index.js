@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import * as serviceWorker from './components/serviceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 import Login from './components/Login/Login';
 import App from './components/App/App';
