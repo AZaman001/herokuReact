@@ -39,8 +39,10 @@ export class MapContainer extends Component{
     if (window.performance) {
       if (performance.navigation.type === 1) {
         alert( "An issue has been detected!");
-        window.location.replace('http://localhost:3000/detected');
-        // For hosted app URL should be: https://water-react-app.herokuapp.com/detected
+        // window.location.replace('http://localhost:3000/detected');
+        // For hosted app URL should be: 
+        window.location.replace('https://water-react-app.herokuapp.com/detected');
+        
       } 
     }
   }
